@@ -27,7 +27,7 @@ jobs:
         run: python fetch_posts.py
 
       - name: Show token present
-        run: echo "GH_PAT is set: ${{ secrets.GH_PAT != '' }}"
+        run: echo "GH_PAT is present (value hidden)"
 
       - name: Show remotes
         run: git remote -v
