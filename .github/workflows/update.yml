@@ -1,0 +1,27 @@
+name: Update FB posts JSON
+on:
+  schedule:
+    - cron: '0 * * * *'  # každú hodinu
+  workflow_dispatch:
+jobs:
+  update-json:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install deps
+        run: pip install requests
+      - name: Fetch FB posts
+        env:
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+        run: python fetch_posts.py
+      - name: Commit & Push JSON
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add posts.json
+          git commit -m "Update FB posts"
+          git push
