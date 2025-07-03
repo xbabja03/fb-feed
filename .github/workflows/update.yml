@@ -45,4 +45,16 @@ jobs:
           git config user.email "action@github.com"
           git add posts.json
           git commit -m "Update FB posts" || echo "Nothing to commit"
-          git push https://xbabja03:${GH_PAT}@github.com/xbabja03/fb-feed.git HEAD:main
+
+          echo "🔍 Debug: show remotes before push"
+          git remote -v
+
+          echo "🔍 Debug: replacing origin with authenticated URL"
+          git remote remove origin
+          git remote add origin https://xbabja03:${GH_PAT}@github.com/xbabja03/fb-feed.git
+
+          echo "🔐 GH_PAT starts with: ${GH_PAT:0:10}..."
+
+          echo "🚀 Executing PUSH..."
+          git push origin HEAD:main
+
