@@ -18,10 +18,12 @@ jobs:
         env:
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
         run: python fetch_posts.py
-      - name: Commit & Push JSON
+     - name: Commit & Push JSON
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
           git add posts.json
           git commit -m "Update FB posts"
-          git push
+          git push https://xbabja03:${GH_PAT}@github.com/xbabja03/fb-feed.git HEAD:main
