@@ -2,7 +2,7 @@ name: Update FB posts JSON
 
 on:
   schedule:
-    - cron: '0 * * * *'  # každú hodinu
+    - cron: '0 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -26,11 +26,16 @@ jobs:
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
         run: python fetch_posts.py
 
-      - name: Show token present
-        run: echo "GH_PAT is present (value hidden)"
-
-      - name: Show remotes
-        run: git remote -v
+      - name: Debug – show token available
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          if [ -z "${GH_PAT}" ]; then
+            echo "❌ GH_PAT is NOT set"
+            exit 1
+          else
+            echo "✅ GH_PAT is present"
+          fi
 
       - name: Commit & Push posts.json
         env:
@@ -39,5 +44,5 @@ jobs:
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
           git add posts.json
-          git commit -m "Update FB posts" || echo "No changes to commit"
+          git commit -m "Update FB posts" || echo "Nothing to commit"
           git push https://xbabja03:${GH_PAT}@github.com/xbabja03/fb-feed.git HEAD:main
