@@ -10,27 +10,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
-      - name: Install deps
+      - name: Install dependencies
         run: pip install requests
 
-      - name: Fetch FB posts
+      - name: Fetch Facebook posts
         env:
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
         run: python fetch_posts.py
 
-      - name: Commit & Push JSON
+      - name: Show token present
+        run: echo "GH_PAT is set: ${{ secrets.GH_PAT != '' }}"
+
+      - name: Show remotes
+        run: git remote -v
+
+      - name: Commit & Push posts.json
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
           git add posts.json
-          git commit -m "Update FB posts"
+          git commit -m "Update FB posts" || echo "No changes to commit"
           git push https://xbabja03:${GH_PAT}@github.com/xbabja03/fb-feed.git HEAD:main
